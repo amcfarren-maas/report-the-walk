@@ -1,7 +1,7 @@
 /* Report the Walk: guarda la app en el teléfono para que abra sin conexión.
    La app: red primero (así llegan las versiones nuevas) y, sin conexión o si tarda, la copia guardada.
    Fuentes y lector de códigos (ZXing): copia guardada primero. Los datos de stock y las visitas NO pasan por aquí: viven en el teléfono. */
-const VERSION = "rtw-2026-11-23a";
+const VERSION = "rtw-20261126-2f379525";
 const APP = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-64.png"];
 const EXT = ["https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"];
