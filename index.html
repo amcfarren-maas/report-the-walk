@@ -101,7 +101,7 @@ input[type=file].hide{position:absolute;width:1px;height:1px;opacity:0;pointer-e
 .data .dot{width:10px;height:10px;border-radius:50%;background:var(--good);margin-top:6px;flex:0 0 auto}
 .data.off .dot{background:var(--line-2)}
 .data .dtx{flex:1;min-width:0}
-.data b{display:block}
+.data .dtx>b{display:block}
 
 /* tarjetas de cifras */
 .kg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -260,6 +260,33 @@ textarea.field{min-height:96px;resize:vertical;line-height:1.45}
 .pitem{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
 .pitem:first-of-type{border-top:0;margin-top:4px}
 .artbox{font-size:13px;color:var(--text-2)}
+/* marcar la foto (24-11-2026): editor a pantalla completa, oscuro como la cámara, encima de todo */
+.thumb{width:96px;height:96px}
+.thumb.marked{border:2px solid var(--logo)}
+.thumb .tmark{position:absolute;left:4px;bottom:4px;top:auto;right:auto;width:auto;display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 9px 0 7px;border-radius:14px;border:0;background:rgba(0,0,0,.66);color:#fff;font-size:12px;font-weight:600;line-height:1}
+.thumb .tmark svg{width:14px;height:14px}
+.draw{position:fixed;inset:0;z-index:80;background:#0e1013;color:#fff;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.dtop{display:flex;align-items:center;gap:8px;padding:8px 12px;min-height:56px}
+.dtop .t{flex:1;text-align:center;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dtop button{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid #3a3f47;background:#1d2127;color:#fff;font-weight:600}
+.dtop button.ok{background:#0cc8f4;border-color:#0cc8f4;color:#04202c}
+.dstage{flex:1;min-height:0;display:grid;place-items:center;padding:6px;overflow:hidden}
+.dstage canvas{display:block;touch-action:none;border-radius:4px;background:#222;cursor:crosshair}
+.dtools{display:grid;gap:10px;padding:10px 12px 12px;background:#15181c;border-top:1px solid #2a2f36}
+.drow{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
+.dtool{width:48px;height:48px;border-radius:12px;border:1px solid #3a3f47;background:#1d2127;color:#fff;display:grid;place-items:center}
+.dtool svg{width:24px;height:24px}
+.dtool.on{background:#fff;color:#0e1013;border-color:#fff}
+.dcol{width:34px;height:34px;border-radius:50%;border:2px solid #0e1013;box-shadow:0 0 0 1px #4a4f57}
+.dcol.on{box-shadow:0 0 0 3px #fff}
+.dact{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid #3a3f47;background:#1d2127;color:#fff;font-weight:600;font-size:14px}
+.dact:disabled{opacity:.45;cursor:default}
+.dhelp{font-size:12.5px;color:#b8bec6;text-align:center;min-height:1.2em}
+/* datos del artículo en el hallazgo (24-11-2026) */
+.chk{display:flex;gap:10px;align-items:center;font-size:13.5px;min-height:40px;color:var(--text)}
+.chk input{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto}
+.artsnap{white-space:pre-line;font-size:12.5px;line-height:1.45;color:var(--text-2);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-variant-numeric:tabular-nums}
 
 /* solo en la app sin conexión: escáner en vivo, guardar / compartir, aviso sin conexión, instalar */
 .scanner{position:fixed;inset:0;z-index:70;background:#000;display:flex;flex-direction:column}
@@ -270,7 +297,7 @@ textarea.field{min-height:96px;resize:vertical;line-height:1.45}
 .scbar .btn{flex:0 0 auto}
 .dlg{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:grid;place-items:end center;padding:16px}
 .dlg .card{width:min(520px,100%);display:grid;gap:10px;margin-bottom:env(safe-area-inset-bottom,0px)}
-.off{background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.offchip{background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -278,7 +305,7 @@ textarea.field{min-height:96px;resize:vertical;line-height:1.45}
 <header class="top"><div class="top-in">
   <div class="brand">
     <svg class="logo" viewBox="0 0 300 96" role="img" aria-label="Report the Walk"><text class="l1" x="0" y="56" font-size="64" textLength="300" lengthAdjust="spacingAndGlyphs">REPORT</text><text class="l2" x="1" y="94" font-size="33" textLength="298" lengthAdjust="spacingAndGlyphs">THE WALK</text></svg>
-    <small id="hdrMeta">Logística Caribe · sin datos</small> <span class="off" id="offChip" hidden>Sin conexión</span></div>
+    <small id="hdrMeta">Logística Caribe · sin datos</small> <span class="offchip" id="offChip" hidden>Sin conexión</span></div>
   <div class="mk" role="group" aria-label="Mercado">
     <button type="button" data-mk="DO" class="on" aria-pressed="true">DO</button>
     <button type="button" data-mk="PR" aria-pressed="false">PR</button>
@@ -372,7 +399,7 @@ textarea.field{min-height:96px;resize:vertical;line-height:1.45}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
       Nueva visita
     </button>
-    <div class="small muted">Tienda, Small CMP o almacén. Cada hallazgo lleva foto, zona, «Revisar» o «Bien», comentario (también por voz) y acción con responsable.</div>
+    <div class="small muted">Tienda, Small CMP o almacén. Cada hallazgo lleva foto, zona, «Revisar» o «Bien», comentario (también por voz) y acción con responsable. En la foto puedes marcar con círculo, cuadrado, flecha, lápiz o sombreado dónde está lo que señalas, y al escanear un artículo sus datos de stock, venta y llegadas pasan al informe.</div>
     <div class="list" id="vList"></div>
     <div class="card" id="vExpCard" hidden><b>Al dashboard del PC</b>
       <div class="small tx2" style="margin:4px 0 10px">Guarda en un archivo todas las visitas de este teléfono. Compártelo a OneDrive (carpeta «MI CLEAN movil») o pásalo a Descargas del PC: el próximo MI CLEAN (o «Actualizar datos») las enseña en la pestaña «Visitas». Sirve también de copia de seguridad.</div>
@@ -409,6 +436,23 @@ textarea.field{min-height:96px;resize:vertical;line-height:1.45}
   <div class="scframe" aria-hidden="true"></div>
   <div class="scbar"><span id="scMsg">Apunta al código de barras o al QR de la etiqueta</span><button type="button" class="btn" id="scClose">Cerrar</button></div>
 </div>
+<div class="draw" id="draw" hidden role="dialog" aria-modal="true" aria-labelledby="dTitle">
+  <div class="dtop"><button type="button" id="dCancel">Cancelar</button><div class="t" id="dTitle">Marcar la foto</div><button type="button" class="ok" id="dOk">Listo</button></div>
+  <div class="dstage" id="dStage"><canvas id="dCanvas" aria-label="Foto del hallazgo: dibuja encima para marcar"></canvas></div>
+  <div class="dtools">
+    <div class="drow" id="dTools" role="group" aria-label="Herramienta">
+      <button type="button" class="dtool" data-t="ell" aria-label="Círculo" title="Círculo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="7"/></svg></button>
+      <button type="button" class="dtool" data-t="rect" aria-label="Cuadrado" title="Cuadrado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="1.5"/></svg></button>
+      <button type="button" class="dtool" data-t="arrow" aria-label="Flecha" title="Flecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L18 6M10 6h8v8"/></svg></button>
+      <button type="button" class="dtool" data-t="pen" aria-label="Lápiz" title="Lápiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></button>
+      <button type="button" class="dtool" data-t="hl" aria-label="Sombrear" title="Sombrear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4l6 6-7 7H8v-5z"/><path d="M3 21h10" stroke-width="3" opacity=".55"/></svg></button>
+    </div>
+    <div class="drow" id="dCols" role="group" aria-label="Color"><button type="button" class="dcol" data-c="#E53935" style="background:#E53935" aria-label="Rojo" title="Rojo"></button><button type="button" class="dcol" data-c="#FFD400" style="background:#FFD400" aria-label="Amarillo" title="Amarillo"></button><button type="button" class="dcol" data-c="#0CC8F4" style="background:#0CC8F4" aria-label="Cian" title="Cian"></button><button type="button" class="dcol" data-c="#22C55E" style="background:#22C55E" aria-label="Verde" title="Verde"></button><button type="button" class="dcol" data-c="#FFFFFF" style="background:#FFFFFF" aria-label="Blanco" title="Blanco"></button></div>
+    <div class="dhelp" id="dHelp" aria-live="polite"></div>
+    <div class="drow"><button type="button" class="dact" id="dUndo">Deshacer</button><button type="button" class="dact" id="dClear">Quitar todas las marcas</button></div>
+  </div>
+</div>
+<input class="hide" type="file" id="vScanCam" accept="image/*" capture="environment" aria-label="Foto de la etiqueta del artículo">
 <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
 
 <script>
@@ -610,6 +654,7 @@ $("#locFile").addEventListener("change", async ev => {
 const VIEWS = ["inicio", "buscar", "escanear", "listas", "visitas"];
 S.nav = 0;
 function route() {
+  if (!$("#draw").hidden) closeDraw(null);
   S.nav++;
   const h = (location.hash || "").slice(1);
   if (h.startsWith("art-")) { closePanel(); openSheet(h.slice(4)); return; }
@@ -826,6 +871,7 @@ $("#sCopy").addEventListener("click", async () => {
 });
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
+  if (!$("#draw").hidden) { closeDraw(null); return; }
   if (!$("#sheet").hidden) $("#sBack").click(); else if (!$("#panel").hidden) $("#pBack").click();
 });
 
@@ -1180,8 +1226,9 @@ function renderVisita() {
   $("#vCopy").onclick = copyVisit; $("#vDl").onclick = exportVisit; $("#vState").onclick = toggleEstado; $("#vDel").onclick = delVisit;
   use("sample").then(s => { const b = $("#vResAi"); if (s && b) b.hidden = false; });
   use("downloads").then(d => { const b = $("#vDl"); if (d && b) b.hidden = false; });
-  foot(`<button type="button" class="btn primary" id="vAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Añadir hallazgo</button>`);
+  foot(`<button type="button" class="btn" id="vScan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 9v6M10 9v6M13 9v6M16.5 9v6"/></svg>Escanear artículo</button><button type="button" class="btn primary" id="vAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Añadir hallazgo</button>`);
   $("#vAdd").onclick = () => { location.hash = `hallazgo-${v.id}-nuevo`; };
+  $("#vScan").onclick = () => scanToVisit(v.id);
   renderVisitaHead(); renderHal();
 }
 function renderVisitaHead() {
@@ -1222,7 +1269,7 @@ function halCard(h, n) {
   return `<button type="button" class="hcard m-${m}" data-hal="${esc(h.id)}">
     <span class="ht"><b>${n}.</b><span class="chip ${m === "Revisar" ? "crit" : m === "Bien" ? "good" : "ns"}">${m}</span><b>${esc(h.que || "Sin título")}</b></span>
     ${fotos ? `<span class="hp">${fotos}</span>` : ""}${h.comentario ? `<span class="small">${esc(h.comentario)}</span>` : ""}
-    ${acc ? `<span class="hmeta">${acc}</span>` : ""}${h.art ? `<span class="hmeta">Artículo ${esc(artF(h.art))}${h.artD ? " · " + esc(h.artD) : ""}</span>` : ""}
+    ${acc ? `<span class="hmeta">${acc}</span>` : ""}${h.art ? `<span class="hmeta">Artículo ${esc(artF(h.art))}${h.artD ? " · " + esc(h.artD) : ""}</span>` : ""}${h.art && h.artTxt ? `<span class="artsnap">${esc(h.artTxt)}</span>` : ""}
     ${h.refTxt ? `<span class="hmeta">Sigue de la ${esc(h.refTxt)}</span>` : ""}</button>`;
 }
 function renderHal() {
@@ -1242,7 +1289,7 @@ async function saveResumen() {
   catch (e) { b.disabled = false; toast("No se pudo guardar el resumen. Revisa la conexión."); }
 }
 function halLine(h, i) {
-  return `${i + 1}. [${h.marca || "Info"}] ${h.zona || ""}: ${h.que || ""}${h.comentario ? " — " + h.comentario : ""}${h.dato ? " | dato: " + h.dato : ""}${h.accion ? " | acción: " + h.accion + (h.resp ? " (" + h.resp + ")" : "") : ""}${h.art ? " | artículo " + artF(h.art) + " " + (h.artD || "") : ""}${h.refTxt ? " | sigue de la " + h.refTxt : ""}`;
+  return `${i + 1}. [${h.marca || "Info"}] ${h.zona || ""}: ${h.que || ""}${h.comentario ? " — " + h.comentario : ""}${h.dato ? " | dato: " + h.dato : ""}${h.accion ? " | acción: " + h.accion + (h.resp ? " (" + h.resp + ")" : "") : ""}${h.art ? " | artículo " + artF(h.art) + " " + (h.artD || "") + (h.artTxt ? " | datos de la app (" + (h.artSem || "") + "): " + h.artTxt.replace(/\n/g, " / ") : "") : ""}${h.refTxt ? " | sigue de la " + h.refTxt : ""}`;
 }
 async function redactar() {
   const sample = await use("sample"), v = curV(); if (!sample || !v) return;
@@ -1281,7 +1328,7 @@ function reportHtml(v, hal, img) {
   const e = esc, num = new Map(hal.map((h, i) => [h.id, i + 1]));
   const zs = [...ZONAS, ...new Set(hal.map(h => h.zona).filter(z => z && !ZONAS.includes(z)))], k = v.kpis, acc = hal.filter(h => h.accion);
   const rows = z => hal.filter(h => (h.zona || "Oficinas y otros") === z).map(h => `<tr><td class="n">${num.get(h.id)}</td><td class="f">${(h.fotos || []).map(id => img[id] ? `<img src="${img[id]}" alt="">` : "").join("")}</td>
-    <td><b>${e(h.que || "")}</b>${h.art ? `<div class="m">Artículo ${e(artF(h.art))} ${e(h.artD || "")}</div>` : ""}${h.refTxt ? `<div class="m">Sigue de la ${e(h.refTxt)}</div>` : ""}</td>
+    <td><b>${e(h.que || "")}</b>${h.art ? `<div class="m">Artículo ${e(artF(h.art))} ${e(h.artD || "")}</div>` : ""}${h.art && h.artTxt ? `<div class="ad">Datos de la app (semana ${e(String(h.artSem || "").replace(/^\d{4}-/, ""))}):<br>${e(h.artTxt).replace(/\n/g, "<br>")}</div>` : ""}${h.refTxt ? `<div class="m">Sigue de la ${e(h.refTxt)}</div>` : ""}</td>
     <td>${e(h.comentario || "")}</td><td>${[h.dato && "Dato: " + h.dato, h.accion && "Acción: " + h.accion, h.resp && "Responsable: " + h.resp].filter(Boolean).map(e).join("<br>")}</td>
     <td class="mk ${MARCAS.includes(h.marca) ? h.marca : ""}">${e(h.marca || "")}</td></tr>`).join("");
   return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Visita ${e(placeName(v))} · ${e(v.fecha)}</title><style>
@@ -1289,7 +1336,7 @@ body{font:14px/1.45 "Segoe UI",Arial,sans-serif;color:#1f2328;margin:24px auto;m
 h1{color:#002060;font-size:24px;margin:0}h2{color:#002060;font-size:17px;border-bottom:2px solid #002060;padding-bottom:3px;margin-top:26px}
 .sub{color:#545a61;margin:4px 0 16px}table{border-collapse:collapse;width:100%;margin:8px 0}th,td{border:1px solid #c9cdd3;padding:6px 8px;vertical-align:top;text-align:left}
 th{background:#eef0f3;font-size:12.5px}td.n{width:28px;text-align:center;font-weight:700}td.f{width:190px}td.f img{width:180px;display:block;margin-bottom:4px;border-radius:4px}
-.m{color:#6c727a;font-size:12px}td.mk{font-weight:700;width:70px}td.mk.Revisar{color:#b3261e}td.mk.Bien{color:#1e7b34}
+.m{color:#6c727a;font-size:12px}.ad{font-size:12px;color:#3d4249;background:#f4f5f7;border-left:3px solid #5b8db8;padding:4px 8px;margin-top:4px}td.mk{font-weight:700;width:70px}td.mk.Revisar{color:#b3261e}td.mk.Bien{color:#1e7b34}
 .res{white-space:pre-wrap;background:#f4f5f7;border-left:4px solid #002060;padding:10px 12px}.kv td:first-child{width:180px;color:#545a61}footer{color:#6c727a;font-size:12px;margin-top:30px}
 </style></head><body>
 <h1>Visita ${e(placeName(v))}</h1><div class="sub">${e(fechaL(v.fecha))} · ${e(v.motivo || "")} · Logística Caribe (uso interno)</div>
@@ -1359,7 +1406,7 @@ async function exportDashboard(btn) {
         const h = hal[i], fotos = [];
         for (const id of (h.fotos || []).slice(0, 4)) { const t = await thumbData(id); if (t.startsWith("data:image/")) fotos.push(t); }
         H.push({n: i + 1, zona: h.zona || "", marca: h.marca || "", que: h.que || "", comentario: h.comentario || "", dato: h.dato || "", accion: h.accion || "", resp: h.resp || "",
-          art: h.art || "", artD: h.artD || "", refTxt: h.refTxt || "", fotos});
+          art: h.art || "", artD: h.artD || "", artTxt: h.artTxt || "", artSem: h.artSem || "", refTxt: h.refTxt || "", fotos});
       }
       out.push({id: v.id, lugar: v.lugar || "", lugarN: v.lugarN || "", mk: v.mk || "", grupo: v.grupo || "", fecha: v.fecha || "", motivo: v.motivo || "", quien: v.quien || "",
         acomp: v.acomp || "", estado: v.estado || "abierta", resumen: v.resumen || "", kpis: v.kpis || null, creado: v.creado || "", act: v.act || "", hallazgos: H});
@@ -1389,26 +1436,29 @@ function maybeEditor() {
   if (P.hid && !h) { $("#pBody").innerHTML = emptyHtml("No encuentro este hallazgo. Puede que se haya borrado."); return; }
   const sd = P.hid ? {} : (V.seed || {}); V.seed = null;
   const src = h || sd;
-  V.E = {vid: P.vid, hid: P.hid, zona: src.zona || LS.get("ss_zona", "Almacén"), marca: h ? (h.marca || "Revisar") : "Revisar", que: src.que || "", comentario: h ? h.comentario || "" : "",
+  V.E = {vid: P.vid, hid: P.hid, zona: src.zona || LS.get("ss_zona", "Almacén"), marca: h ? (h.marca || "Revisar") : (MARCAS.includes(sd.marca) ? sd.marca : "Revisar"), que: src.que || "", comentario: h ? h.comentario || "" : "",
     dato: h ? h.dato || "" : "", accion: src.accion || "", resp: src.resp || "", art: h ? h.art || "" : (sd.art || S.pendingArt || ""), artD: h ? h.artD || "" : "",
-    fotos: h ? (h.fotos || []).slice() : [], quitar: [], nuevas: [], orden: h ? h.orden : 0, creado: h ? h.creado : "", ref: src.ref || "", refTxt: src.refTxt || "", newId: null};
+    fotos: h ? (h.fotos || []).slice() : [], quitar: [], nuevas: [], rep: {}, artAdd: h ? !!h.artTxt : true, artTxt: h ? h.artTxt || "" : "", artSem: h ? h.artSem || "" : "", artFor: h ? h.art || "" : "", orden: h ? h.orden : 0, creado: h ? h.creado : "", ref: src.ref || "", refTxt: src.refTxt || "", newId: null};
   S.pendingArt = null;
   renderEditor();
 }
 function syncMarca() { $$("#eMarca button").forEach(b => { const on = b.dataset.m === V.E.marca; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); }
 function showArt() {
   const E = V.E, box = $("#eArtBox"); if (!E || !box) return;
-  if (!E.art) { box.textContent = ""; return; }
+  if (!E.art) { box.textContent = ""; artPreview(); return; }
   const H = hits(E.art);
   box.innerHTML = H.length ? `${esc(H[0].M.pf[H[0].i] || "")} ${esc(restOf(H[0].M, H[0].i))} · ` + H.map(({mk, M, i}) => `${mk} ${fmtN(stockOf(mk, M, i))} uds (${esc(estado(mk, M, i)[0])})`).join(" · ")
     : (S.data ? "No está en los datos de la semana (se guarda igual)." : "");
+  artPreview();
 }
 function renderThumbs() {
   const E = V.E, t = $("#eThumbs"); if (!E || !t) return;
-  const saved = E.fotos.filter(id => !E.quitar.includes(id)).map(id => `<div class="thumb"><img data-ph="${esc(id)}" alt=""><button type="button" data-qf="${esc(id)}" aria-label="Quitar foto">×</button></div>`);
-  const nuevas = E.nuevas.map((n, i) => `<div class="thumb"><img src="${esc(n.url)}" alt=""><button type="button" data-qn="${i}" aria-label="Quitar foto">×</button></div>`);
+  const saved = E.fotos.filter(id => !E.quitar.includes(id)).map(id => { const r = E.rep[id]; return `<div class="thumb${r ? " marked" : ""}">${r ? `<img src="${esc(r.url)}" alt="">` : `<img data-ph="${esc(id)}" alt="">`}<button type="button" data-qf="${esc(id)}" aria-label="Quitar foto">×</button><button type="button" class="tmark" data-mf="${esc(id)}">${PEN_SVG}${r ? "Marcada" : "Marcar"}</button></div>`; });
+  const nuevas = E.nuevas.map((n, i) => `<div class="thumb${n.marks && n.marks.length ? " marked" : ""}"><img src="${esc(n.url)}" alt=""><button type="button" data-qn="${i}" aria-label="Quitar foto">×</button><button type="button" class="tmark" data-mn="${i}">${PEN_SVG}${n.marks && n.marks.length ? "Marcada" : "Marcar"}</button></div>`);
   t.innerHTML = saved.concat(nuevas).join("") || `<span class="dhint">Sin fotos todavía.</span>`;
-  t.querySelectorAll("[data-qf]").forEach(b => { b.onclick = () => { E.quitar.push(b.dataset.qf); renderThumbs(); }; });
+  t.querySelectorAll("[data-qf]").forEach(b => { b.onclick = () => { const r = E.rep[b.dataset.qf]; if (r) { URL.revokeObjectURL(r.url); delete E.rep[b.dataset.qf]; } E.quitar.push(b.dataset.qf); renderThumbs(); }; });
+  t.querySelectorAll("[data-mf]").forEach(b => { b.onclick = () => markGuardada(b.dataset.mf); });
+  t.querySelectorAll("[data-mn]").forEach(b => { b.onclick = () => markNueva(+b.dataset.mn); });
   t.querySelectorAll("[data-qn]").forEach(b => { b.onclick = () => { const n = E.nuevas.splice(+b.dataset.qn, 1)[0]; if (n) URL.revokeObjectURL(n.url); renderThumbs(); }; });
   const any = saved.length + nuevas.length > 0;
   use("sample").then(s => s ? s.limits().catch(() => null) : null).then(l => { const d = $("#eDesc"); if (d) d.hidden = !(l && l.images && any); });
@@ -1417,6 +1467,169 @@ async function compress(file) { const c = await toCanvas(file, 1600); return awa
 async function addFotos(files) {
   const E = V.E; if (!E) return;
   for (const f of files) { try { const b = await compress(f); if (b && V.E === E) E.nuevas.push({blob: b, url: URL.createObjectURL(b), id: null}); } catch (e) { toast("No pude leer una de las fotos."); } }
+  renderThumbs();
+}
+/* ---------- datos del artículo en el informe (24-11-2026): foto de lo que dice la app ese día, por mercado ---------- */
+function artSnap(a) {
+  if (!S.data) return "";
+  return hits(a).map(({mk, M, i}) => {
+    const e = estado(mk, M, i), L = ((S.data.ct || {})[mk] || {})[a] || [];
+    const uds = L.reduce((s, c) => s + (+c[2] || 0), 0), fs = L.filter(c => c[0] !== "+").map(c => ddate(c[3])).filter(Boolean).sort((x, y) => x - y);
+    const p = [`${mk} · ${e[0]}${M.ts[i] ? " · top seller" : ""}`, `tienda ${fmtN(M.stt[i])}`];
+    if (mk === "DO") p.push(`CAU ${fmtN(M.cau[i])}`, `PV a CAU ${fmtN(M.ped[i])}`, `pendiente tienda ${fmtN(M.pv[i])}`); else p.push(`pedidos ${fmtN(M.ped[i])}`);
+    p.push(`venta ${fmtN(M.aws[i], 1)}/sem`, `${M.sw[i] ? fmtN(M.sw[i], 1) : "–"} sem de stock`, M.nx[i] ? `llega ${wk(M.nx[i])} (${fmtN(M.nq[i])} uds)` : "sin llegada en 12 sem");
+    if (uds) p.push(`en contenedores ${fmtN(uds)} uds${fs.length ? " (el primero llega el " + fs[0].toLocaleDateString("es-ES", {day: "numeric", month: "short"}) + ")" : ""}`);
+    if (M.fl[i] & 3) p.push(`rotura prevista ${wk(M.rot[i])}`);
+    return p.join(" · ");
+  }).join("\n");
+}
+function artPreview() {
+  const E = V.E, box = $("#eArtSnap"), w = $("#eArtAddW"); if (!E || !box || !w) return;
+  const snap = () => { E.artTxt = artSnap(E.art); E.artSem = E.artTxt && S.data ? S.data.sem || "" : ""; };
+  if (E.art && E.artFor !== E.art) { snap(); E.artFor = E.art; }
+  if (E.art && E.artAdd && !E.artTxt) snap();
+  const show = !!(E.art && (E.artTxt || artSnap(E.art)));
+  w.hidden = !show; $("#eArtAdd").checked = !!E.artAdd;
+  box.hidden = !(show && E.artAdd && E.artTxt);
+  box.textContent = E.artTxt ? `Datos de la app · semana ${String(E.artSem || "").replace(/^\d{4}-/, "")}\n${E.artTxt}` : "";
+}
+/* escanear un artículo desde la visita: hallazgo nuevo con el artículo y sus datos (marca «Info», se puede cambiar) */
+function newArtHal(vid, a) {
+  const v = V.list.find(x => x.id === vid), H = hits(a), P = H.find(x => v && x.mk === v.mk) || H[0];
+  V.seed = {marca: "Info", que: P ? `${P.M.pf[P.i] || artF(a)} · ${estado(P.mk, P.M, P.i)[0]} en ${P.mk}`.slice(0, 160) : `Artículo ${artF(a)}`};
+  S.pendingArt = a; location.hash = `hallazgo-${vid}-nuevo`;
+}
+function scanToVisit(vid) { if (liveOK()) openScanner(c => newArtHal(vid, c)); else $("#vScanCam").click(); }
+$("#vScanCam").addEventListener("change", async ev => {
+  const f = ev.target.files[0]; ev.target.value = ""; const vid = V.cur; if (!f || !vid) return;
+  if (!S.data) { toast("Primero carga los datos de la semana (Inicio)."); return; }
+  toast("Leyendo el código…");
+  let texts = []; try { texts = await readCodes(f); } catch (e) {}
+  const c = [...new Set(texts.flatMap(codesFrom))];
+  if (!c.length) { toast("No encontré un código de artículo en la foto. Prueba más cerca o escríbelo en el hallazgo."); return; }
+  newArtHal(vid, c[0]);
+});
+
+/* ---------- marcar la foto (24-11-2026): círculo, cuadrado, flecha, lápiz y sombreado, dibujados sobre la imagen (máx. 1600 px) ---------- */
+const PEN_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>';
+const DHELP = {ell: "Círculo: arrastra para rodear lo que quieres señalar (o toca un punto).", rect: "Cuadrado: arrastra para enmarcar la zona (o toca un punto).",
+  arrow: "Flecha: arrastra desde fuera hasta el punto.", pen: "Lápiz: dibuja con el dedo.", hl: "Sombrear: pinta encima con color transparente."};
+const DR = {img: null, url: "", marks: [], cur: null, pid: null, raf: 0, done: null, base: 4, tool: LS.get("ss_dtool", "ell"), col: LS.get("ss_dcol", "#E53935")};
+if (!DHELP[DR.tool]) DR.tool = "ell";
+if (!$$("#dCols [data-c]").some(b => b.dataset.c === DR.col)) DR.col = "#E53935";
+const fotoBlobOf = id => photoBlob(id);
+function drMark(cx, m) {
+  const p = m.p; if (!p || !p.length) return;
+  cx.save(); cx.strokeStyle = m.c; cx.fillStyle = m.c; cx.lineWidth = m.w; cx.lineCap = "round"; cx.lineJoin = "round";
+  if (m.t === "hl") cx.globalAlpha = 0.38; else { cx.shadowColor = "rgba(0,0,0,.5)"; cx.shadowBlur = m.w * 0.9; }
+  cx.beginPath();
+  if (m.t === "pen" || m.t === "hl") {
+    if (p.length === 1) { cx.arc(p[0][0], p[0][1], m.w / 2, 0, Math.PI * 2); cx.fill(); cx.restore(); return; }
+    cx.moveTo(p[0][0], p[0][1]); for (let k = 1; k < p.length; k++) cx.lineTo(p[k][0], p[k][1]);
+  } else {
+    const a = p[0], b = p[1] || p[0];
+    if (m.t === "rect") cx.rect(Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.abs(b[0] - a[0]), Math.abs(b[1] - a[1]));
+    else if (m.t === "ell") cx.ellipse((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, Math.max(1, Math.abs(b[0] - a[0]) / 2), Math.max(1, Math.abs(b[1] - a[1]) / 2), 0, 0, Math.PI * 2);
+    else {
+      const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), L = Math.max(m.w * 3.5, 14);
+      cx.moveTo(a[0], a[1]); cx.lineTo(b[0], b[1]);
+      cx.moveTo(b[0] - L * Math.cos(ang - 0.5), b[1] - L * Math.sin(ang - 0.5)); cx.lineTo(b[0], b[1]); cx.lineTo(b[0] - L * Math.cos(ang + 0.5), b[1] - L * Math.sin(ang + 0.5));
+    }
+  }
+  cx.stroke(); cx.restore();
+}
+function drRender() {
+  const cv = $("#dCanvas"); if (!DR.img) return;
+  const cx = cv.getContext("2d"); cx.clearRect(0, 0, cv.width, cv.height); cx.drawImage(DR.img, 0, 0, cv.width, cv.height);
+  DR.marks.forEach(m => drMark(cx, m)); if (DR.cur) drMark(cx, DR.cur);
+  $("#dUndo").disabled = !DR.marks.length; $("#dClear").disabled = !DR.marks.length;
+}
+function drFit() {
+  const cv = $("#dCanvas"); if (!DR.img || $("#draw").hidden) return;
+  const r = $("#dStage").getBoundingClientRect(), k = Math.min((r.width - 12) / cv.width, (r.height - 12) / cv.height);
+  cv.style.width = Math.max(40, Math.floor(cv.width * k)) + "px"; cv.style.height = Math.max(40, Math.floor(cv.height * k)) + "px";
+}
+function drSync() {
+  $$("#dTools [data-t]").forEach(b => { const on = b.dataset.t === DR.tool; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  $$("#dCols [data-c]").forEach(b => { const on = b.dataset.c === DR.col; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  $("#dHelp").textContent = DHELP[DR.tool] || "";
+}
+/* abre el editor con la foto original y las marcas que ya tenía; devuelve {blob, marks} (blob null = sin marcas) o null si se cancela */
+function markPhoto(blob, marks) {
+  return new Promise(async res => {
+    if (DR.done) closeDraw(null);
+    const url = URL.createObjectURL(blob);
+    let img;
+    try { img = await new Promise((ok, ko) => { const im = new Image(); im.onload = () => ok(im); im.onerror = ko; im.src = url; }); }
+    catch (e) { URL.revokeObjectURL(url); toast("No pude abrir la foto."); res(null); return; }
+    const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)), cv = $("#dCanvas");
+    cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
+    Object.assign(DR, {img, url, marks: (marks || []).map(m => JSON.parse(JSON.stringify(m))), cur: null, pid: null, done: res,
+      base: Math.max(3, Math.round(Math.max(cv.width, cv.height) * 0.006))});
+    stopDict(); $("#draw").hidden = false; drSync(); drRender(); requestAnimationFrame(drFit);
+  });
+}
+function closeDraw(result) {
+  const f = DR.done; DR.done = null; $("#draw").hidden = true; DR.cur = null; DR.pid = null;
+  if (DR.url) URL.revokeObjectURL(DR.url); DR.url = ""; DR.img = null;
+  if (f) f(result);
+}
+function drPt(e) { const cv = $("#dCanvas"), r = cv.getBoundingClientRect(); return [Math.round((e.clientX - r.left) * cv.width / r.width), Math.round((e.clientY - r.top) * cv.height / r.height)]; }
+$("#dCanvas").addEventListener("pointerdown", e => {
+  if (DR.pid != null || !DR.img) return; e.preventDefault();
+  DR.pid = e.pointerId; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (er) {}
+  const w = DR.tool === "hl" ? DR.base * 6 : DR.tool === "pen" ? DR.base : Math.round(DR.base * 1.3);
+  DR.cur = {t: DR.tool, c: DR.col, w, p: [drPt(e)]}; drRender();
+});
+$("#dCanvas").addEventListener("pointermove", e => {
+  if (e.pointerId !== DR.pid || !DR.cur) return; e.preventDefault();
+  const p = drPt(e), c = DR.cur;
+  if (c.t === "pen" || c.t === "hl") { const q = c.p[c.p.length - 1]; if (Math.hypot(p[0] - q[0], p[1] - q[1]) >= 2) c.p.push(p); } else c.p[1] = p;
+  if (!DR.raf) DR.raf = requestAnimationFrame(() => { DR.raf = 0; drRender(); });
+});
+function drEnd(e) {
+  if (e.pointerId !== DR.pid) return; DR.pid = null; const c = DR.cur; DR.cur = null; if (!c) return;
+  if (c.t === "ell" || c.t === "rect") {
+    const b = c.p[1];
+    if (!b || Math.hypot(b[0] - c.p[0][0], b[1] - c.p[0][1]) < DR.base * 3) {       // un toque: forma de tamaño fijo centrada en el punto
+      const cv = $("#dCanvas"), R = Math.round(Math.min(cv.width, cv.height) * 0.08), [x, y] = c.p[0];
+      c.p = [[x - R, y - R], [x + R, y + R]];
+    }
+    DR.marks.push(c);
+  } else if (c.t === "arrow") { if (c.p[1] && Math.hypot(c.p[1][0] - c.p[0][0], c.p[1][1] - c.p[0][1]) > DR.base * 3) DR.marks.push(c); }
+  else DR.marks.push(c);
+  drRender();
+}
+$("#dCanvas").addEventListener("pointerup", drEnd);
+$("#dCanvas").addEventListener("pointercancel", drEnd);
+$("#dTools").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; DR.tool = b.dataset.t; LS.set("ss_dtool", DR.tool); drSync(); });
+$("#dCols").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (!b) return; DR.col = b.dataset.c; LS.set("ss_dcol", DR.col); drSync(); });
+$("#dUndo").addEventListener("click", () => { DR.marks.pop(); drRender(); });
+$("#dClear").addEventListener("click", () => { DR.marks = []; drRender(); });
+$("#dCancel").addEventListener("click", () => closeDraw(null));
+$("#dOk").addEventListener("click", () => {
+  if (!DR.img) return;
+  if (!DR.marks.length) { closeDraw({blob: null, marks: []}); return; }
+  DR.cur = null; drRender(); const marks = DR.marks.slice();
+  $("#dCanvas").toBlob(b => { if (b) closeDraw({blob: b, marks}); else { toast("No pude guardar la foto marcada."); closeDraw(null); } }, "image/jpeg", 0.86);
+});
+window.addEventListener("resize", () => { if (!$("#draw").hidden) drFit(); });
+async function markNueva(i) {
+  const E = V.E, n = E && E.nuevas[i]; if (!n) return;
+  const r = await markPhoto(n.orig || n.blob, n.marks || []); if (!r || V.E !== E) return;
+  if (!n.orig) n.orig = n.blob;
+  URL.revokeObjectURL(n.url);
+  if (r.blob) { n.blob = r.blob; n.marks = r.marks; } else { n.blob = n.orig; n.orig = null; n.marks = []; }
+  n.url = URL.createObjectURL(n.blob); renderThumbs();
+}
+async function markGuardada(id) {
+  const E = V.E; if (!E) return;
+  const old = E.rep[id]; let src = old ? old.orig : null;
+  if (!src) { try { src = await fotoBlobOf(id); } catch (e) { src = null; } }
+  if (!src) { toast("No pude abrir la foto guardada."); return; }
+  const r = await markPhoto(src, old ? old.marks : []); if (!r || V.E !== E) return;
+  if (old) URL.revokeObjectURL(old.url);
+  if (r.blob) E.rep[id] = {orig: src, blob: r.blob, url: URL.createObjectURL(r.blob), marks: r.marks, id: null}; else delete E.rep[id];
   renderThumbs();
 }
 function renderEditor() {
@@ -1438,7 +1651,7 @@ function renderEditor() {
       <div class="fl"><span>Acción</span><div class="fwrap"><input class="field" id="eAcc" aria-label="Acción" value="${esc(E.accion)}" placeholder="Qué se hace">${micHtml()}</div><span class="partial"></span></div>
       <label class="fl"><span>Responsable</span><input class="field" id="eResp" value="${esc(E.resp)}" placeholder="Quién"></label>
       <div class="fl"><span>Artículo (opcional)</span><div class="manual"><input class="field" id="eArt" inputmode="numeric" value="${esc(E.art ? artF(E.art) : "")}" placeholder="005.748.85" aria-label="Código de artículo">
-        <button type="button" class="btn" id="eArtScan">Escanear</button><input class="hide" type="file" id="eArtCam" accept="image/*" capture="environment"></div><span class="artbox" id="eArtBox"></span></div>
+        <button type="button" class="btn" id="eArtScan">Escanear</button><input class="hide" type="file" id="eArtCam" accept="image/*" capture="environment"></div><span class="artbox" id="eArtBox"></span><label class="chk" id="eArtAddW" hidden><input type="checkbox" id="eArtAdd"> Añadir al informe los datos del artículo (stock, venta y llegadas de hoy)</label><div class="artsnap" id="eArtSnap" hidden></div></div>
     </div>
     ${E.hid ? `<button type="button" class="btn danger" id="eDel">Borrar hallazgo</button>` : ""}
     <div class="small muted" id="eMsg"></div>`;
@@ -1450,6 +1663,7 @@ function renderEditor() {
   $("#eCam").onchange = ev => { const f = [...ev.target.files]; ev.target.value = ""; addFotos(f); };
   $("#eGal").onchange = ev => { const f = [...ev.target.files]; ev.target.value = ""; addFotos(f); };
   $("#eDesc").onclick = describeFoto;
+  $("#eArtAdd").onchange = ev => { E.artAdd = ev.target.checked; artPreview(); };
   $("#eArt").oninput = () => { const d = $("#eArt").value.replace(/\D/g, ""); E.art = d.length >= 5 ? d.padStart(8, "0") : ""; showArt(); };
   $("#eArtCam").onchange = async ev => {
     const f = ev.target.files[0]; ev.target.value = ""; if (!f) return;
@@ -1494,7 +1708,12 @@ async function saveHal() {
   stopDict(); btn.disabled = true; msg.textContent = "";
   try {
     const db = await vdb(), assets = await use("assets");
-    const ids = E.fotos.filter(id => !E.quitar.includes(id));
+    const ids = [], repOld = [];
+    for (const id of E.fotos.filter(id => !E.quitar.includes(id))) {
+      const r = E.rep[id]; if (!r) { ids.push(id); continue; }
+      if (!r.id) { if (!assets) throw {code: "no_assets"}; btn.textContent = "Guardando la foto marcada…"; r.id = (await assets.upload(r.blob, {type: "image/jpeg"})).id; }
+      ids.push(r.id); repOld.push(id);
+    }
     for (let k = 0; k < E.nuevas.length; k++) {
       const n = E.nuevas[k];
       if (!n.id) { if (!assets) throw {code: "no_assets"}; btn.textContent = `Subiendo foto ${k + 1} de ${E.nuevas.length}…`; n.id = (await assets.upload(n.blob, {type: "image/jpeg"})).id; }
@@ -1503,11 +1722,11 @@ async function saveHal() {
     btn.textContent = "Guardando…";
     const hid = E.hid || (E.newId = E.newId || rid("h")), H = E.art ? hits(E.art)[0] : null;
     const doc = {orden: E.orden || Date.now(), zona: E.zona, marca: E.marca, que: E.que, comentario: E.comentario, dato: E.dato, accion: E.accion, resp: E.resp,
-      art: E.art || "", artD: H ? `${H.M.pf[H.i] || ""} ${restOf(H.M, H.i)}`.trim() : (E.art ? E.artD : ""), fotos: ids, ref: E.ref, refTxt: E.refTxt, creado: E.creado || nowIso(), act: nowIso()};
+      art: E.art || "", artD: H ? `${H.M.pf[H.i] || ""} ${restOf(H.M, H.i)}`.trim() : (E.art ? E.artD : ""), artTxt: E.art && E.artAdd ? E.artTxt || "" : "", artSem: E.art && E.artAdd ? E.artSem || "" : "", fotos: ids, ref: E.ref, refTxt: E.refTxt, creado: E.creado || nowIso(), act: nowIso()};
     await db.doc(`visitas/${E.vid}/hallazgos/${hid}`).set(doc);
-    if (assets) for (const id of E.quitar) { try { await assets.delete(id); } catch (e) {} }
+    if (assets) for (const id of E.quitar.concat(repOld)) { try { await assets.delete(id); } catch (e) {} }
     await updCounts(E.vid, V.hal.filter(h => h.id !== hid).concat([doc]));
-    LS.set("ss_zona", E.zona); E.nuevas.forEach(n => URL.revokeObjectURL(n.url));
+    LS.set("ss_zona", E.zona); E.nuevas.forEach(n => URL.revokeObjectURL(n.url)); Object.values(E.rep).forEach(r => URL.revokeObjectURL(r.url));
     V.E = null; toast("Hallazgo guardado."); location.replace("#visita-" + E.vid);
   } catch (e) {
     btn.disabled = false; btn.textContent = "Guardar";
